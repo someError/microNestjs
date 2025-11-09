@@ -1,5 +1,3 @@
-import { AppController } from "../../app"
-
 export function Controller(prefix: string): ClassDecorator {
     return (target) => {
         Reflect.defineMetadata('prefix', prefix, target)

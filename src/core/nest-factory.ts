@@ -1,14 +1,25 @@
 import express, { Request, Response } from "express";
 import type { Route } from "./decorators";
+import { IocContainer } from "./ioc-container";
+
+type OptionsType = {
+    controller: any,
+    provider: any
+}
 
 export class NestFactory {
-    static async create(ControllerClass: any) {
+    // ControllerClass: any => options: OptionsType
+    static async create(options: OptionsType) {
         const app = express()
+        const ioc = new IocContainer()
 
-        const controllerInstance = new ControllerClass()
+        ioc.resolve(options.provider)
 
-        const prefix = Reflect.getMetadata('prefix', ControllerClass)
-        const routes = Reflect.getMetadata('routes', ControllerClass)
+        const controllerInstance = ioc.resolve(options.controller)
+
+
+        const prefix = Reflect.getMetadata('prefix', options.controller)
+        const routes = Reflect.getMetadata('routes', options.controller)
 
         routes.forEach((route: Route) => {
             app[route.method](`${prefix}${route.path}`, (req, res) => {
@@ -16,6 +27,8 @@ export class NestFactory {
                 res.json(result)
             })
         })
+
+        
 
         return app
     }
