@@ -1,4 +1,4 @@
-type Constructor<T = any> = new (...args: any[]) => T
+export type Constructor<T = any> = new (...args: any[]) => T
 
 export class IocContainer {
     private instances = new Map<Constructor, any>()
